@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>OpenShock Controller</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .shocker { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <h1>OpenShock Control</h1>
+
+  <label>
+    API Key:
+    <input id="apiKey" type="password" style="width: 400px" />
+  </label>
+  <button id="save">Save</button>
+
+  <hr />
+
+  <label>
+    <input type="checkbox" id="combined" />
+    Combined Control Mode
+  </label>
+
+  <h2>Shockers</h2>
+  <div id="shockers"></div>
+
+  <h2>Test Action</h2>
+  <button id="shock">Shock (30 / 500ms)</button>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
