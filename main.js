@@ -2,11 +2,12 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
+
+const OpenShock = require('./openshock-controller');
 require('./oscquery');
 
 const CONFIG_PATH = path.join(__dirname, 'config.json');
 
-/* ===== Config ===== */
 function loadConfig() {
   if (!fs.existsSync(CONFIG_PATH)) return {};
   try {
@@ -20,7 +21,6 @@ function saveConfig(cfg) {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2));
 }
 
-/* ===== API ===== */
 function api(apiKey) {
   return axios.create({
     baseURL: 'https://api.openshock.app',
@@ -30,16 +30,6 @@ function api(apiKey) {
       'Content-Type': 'application/json'
     }
   });
-}
-
-function stopPayload(id) {
-  return {
-    id,
-    type: 'Stop',
-    intensity: 0,
-    duration: 300,
-    exclusive: true
-  };
 }
 
 app.whenReady().then(() => {
@@ -56,10 +46,13 @@ app.whenReady().then(() => {
 
 /* ===== IPC ===== */
 ipcMain.handle('config:get', () => loadConfig());
+
 ipcMain.handle('config:set', (_, cfg) => {
   saveConfig(cfg);
+  return true;
 });
 
+/* ===== Shocker Discovery ===== */
 ipcMain.handle('openshock:getShockers', async () => {
   const cfg = loadConfig();
   if (!cfg.apiKey) return [];
@@ -68,30 +61,24 @@ ipcMain.handle('openshock:getShockers', async () => {
   return res.data.data.flatMap(g => g.shockers);
 });
 
+/* ===== Manual Control (UI buttons etc.) ===== */
 ipcMain.handle('openshock:control', async (_, shocks) => {
-  const cfg = loadConfig();
-  if (!cfg.apiKey) throw new Error('API key missing');
-
-  const res = await api(cfg.apiKey).post('/2/shockers/control', {
-    shocks,
-    customName: null
-  });
-
-  // ✅ Return ONLY serializable data
-  return res.data ?? null;
+  for (const s of shocks) {
+    await OpenShock.trigger(
+      s.type,
+      s.id,
+      s.duration ?? 300
+    );
+  }
+  return true;
 });
 
+/* ===== Emergency Stop ===== */
 ipcMain.handle('openshock:emergencyStop', async () => {
-  const cfg = loadConfig();
-  if (!cfg.apiKey) return;
+  OpenShock.emergencyStop();
+  return true;
+});
 
-  const shocks = Object.values(cfg.shockers || {})
-    .map(s => stopPayload(s.id));
-
-  if (shocks.length) {
-    await api(cfg.apiKey).post('/2/shockers/control', {
-      shocks,
-      customName: null
-    });
-  }
+ipcMain.handle('openshock:list', () => {
+  return OpenShock.shockerList();
 });

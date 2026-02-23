@@ -18,7 +18,7 @@
       "name": "Upper Arm R",
       "vrchatId": "2",
       "mode": "Sound",
-      "intensity": 1,
+      "intensity": 20,
       "duration": 300
     },
     "c8d2494d-6b01-42d6-8a4d-137618b7e926": {
@@ -96,7 +96,7 @@
   },
   "ui": {
     "collapsed": {
-      "vrchat": true,
+      "vrchat": false,
       "arena": false
     }
   },
