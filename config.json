@@ -1,5 +1,141 @@
 {
-  "apiKey": "",
-  "selectedShockers": [],
-  "combinedMode": false
+  "apiKey": "7NPr2mYVDUIUMcvm1EyziocpPkFgqFMMnSGKhNm682a9XG23MbIm53CoINd56lli",
+  "vrchat": {
+    "enabled": true,
+    "prefix": "openshock"
+  },
+  "shockers": {
+    "91346346-6b6f-4f83-81a9-df095e107aaa": {
+      "id": "91346346-6b6f-4f83-81a9-df095e107aaa",
+      "name": "Upper Arm L",
+      "vrchatId": "1",
+      "mode": "Sound",
+      "intensity": 38,
+      "duration": 300
+    },
+    "6aafc964-e34a-43b8-ab27-ded1c38b7e58": {
+      "id": "6aafc964-e34a-43b8-ab27-ded1c38b7e58",
+      "name": "Upper Arm R",
+      "vrchatId": "2",
+      "mode": "Sound",
+      "intensity": 1,
+      "duration": 300
+    },
+    "c8d2494d-6b01-42d6-8a4d-137618b7e926": {
+      "id": "c8d2494d-6b01-42d6-8a4d-137618b7e926",
+      "name": "Upper Leg R",
+      "vrchatId": "3",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "6b2a2eff-08f5-4179-ab5d-e424fdd83282": {
+      "id": "6b2a2eff-08f5-4179-ab5d-e424fdd83282",
+      "name": "Upper Leg L",
+      "vrchatId": "4",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "65519727-9672-4f09-89cf-1885e1f6b794": {
+      "id": "65519727-9672-4f09-89cf-1885e1f6b794",
+      "name": "Lower Leg R",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "1d787b6c-0d2e-483a-8a55-d12bd109d1fa": {
+      "id": "1d787b6c-0d2e-483a-8a55-d12bd109d1fa",
+      "name": "Lower Leg L",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "5eec1145-48e5-46cb-8edd-be4ffb275bb9": {
+      "id": "5eec1145-48e5-46cb-8edd-be4ffb275bb9",
+      "name": "Lower Arm R",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "fd5de0d9-7845-4280-9e21-06392d2fea1c": {
+      "id": "fd5de0d9-7845-4280-9e21-06392d2fea1c",
+      "name": "Lower Arm L",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "13e19059-8d42-4aa3-901f-ccec1d68ff72": {
+      "id": "13e19059-8d42-4aa3-901f-ccec1d68ff72",
+      "name": "Sides L",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "49562737-2d0a-49ac-8daa-e5587535de45": {
+      "id": "49562737-2d0a-49ac-8daa-e5587535de45",
+      "name": "Sides R",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    },
+    "c5ee8d17-2b74-4b46-8b7e-7d74d0f93d09": {
+      "id": "c5ee8d17-2b74-4b46-8b7e-7d74d0f93d09",
+      "name": "No-no Square",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300
+    }
+  },
+  "ui": {
+    "collapsed": {
+      "vrchat": true,
+      "arena": false
+    }
+  },
+  "vision": {
+    "arenaBreakout": {
+      "enabled": false,
+      "monitor": 0,
+      "sampleSize": 6,
+      "cooldownMs": 1200,
+      "limbs": {
+        "head": {
+          "x": 70,
+          "y": 820
+        },
+        "thorax": {
+          "x": 70,
+          "y": 850
+        },
+        "stomach": {
+          "x": 70,
+          "y": 885
+        },
+        "leftArm": {
+          "x": 40,
+          "y": 865
+        },
+        "rightArm": {
+          "x": 100,
+          "y": 865
+        },
+        "leftLeg": {
+          "x": 55,
+          "y": 935
+        },
+        "rightLeg": {
+          "x": 85,
+          "y": 935
+        }
+      }
+    }
+  }
 }

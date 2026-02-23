@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>OpenShock Spicer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>OpenShock Spicer</h1>
+
+<div class="tabs">
+  <button class="tab active" data-tab="control">Control</button>
+  <button class="tab" data-tab="config">Config</button>
+  <button class="tab" data-tab="logs">Logs</button>
+  <button class="tab" data-tab="games">Game Integrations</button>
+</div>
+
+<section class="tab-panel active" id="tab-control">
+  <div class="panel">
+    <h3>Combined Controls</h3>
+
+    Intensity
+    <input type="range" id="intensity" min="1" max="100" value="20">
+
+    Duration
+    <input type="range" id="duration" min="100" max="5000" value="300">
+
+    <br><br>
+    <button onclick="sendCombined('Shock')">Shock</button>
+    <button onclick="sendCombined('Vibrate')" class="secondary">Vibrate</button>
+    <button onclick="sendCombined('Sound')" class="secondary">Sound</button>
+    <button onclick="emergencyStop()" class="stop">STOP</button>
+  </div>
+
+  <div class="panel">
+    <h3>Shockers</h3>
+    <div id="shockers"></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-config">
+  <div class="panel">
+    <h3>API</h3>
+    <input id="apiKey" placeholder="API Key" style="width:100%">
+    <br><br>
+    <button onclick="saveConfig()">Save</button>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-logs">
+  <div class="panel">
+    <h3>Logs</h3>
+    <div class="muted">Logs loaded later</div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-games">
+
+  <!-- VRCHAT -->
+  <div class="panel game-panel">
+    <div class="game-header" onclick="toggleGame('vrchat')">
+      <div class="game-title">
+        <strong>VRChat</strong>
+        <span class="muted">OSCQuery</span>
+      </div>
+      <div class="game-controls">
+        <label class="inline-toggle" onclick="event.stopPropagation()">
+          <input type="checkbox" id="vrEnabled">
+          Enabled
+        </label>
+
+        <span class="chevron" id="chevron-vrchat">▼</span>
+      </div>
+    </div>
+
+    <div class="game-content active" id="game-vrchat">
+
+            <!-- Emergency -->
+      <button class="stop emergency" onclick="emergencyStop()">
+        🛑 EMERGENCY STOP — ALL SHOCKERS
+      </button>
+      
+      <!-- Prefix -->
+      <div class="vr-prefix">
+        <label>OSC Prefix</label>
+        <div class="prefix-row">
+          <span>/avatar/parameters/</span>
+          <input id="vrPrefix" placeholder="openshock">
+          <span>/</span>
+        </div>
+        <button onclick="saveVR()">Save VR Settings</button>
+      </div>
+
+      <hr>
+
+      <!-- Shocker mapping -->
+      <h4>Shocker Mapping</h4>
+      <div id="vr-shockers"></div>
+    </div>
+  </div>
+
+  <!-- Placeholder example -->
+  <div class="panel game-panel disabled">
+    <div class="game-header">
+      <div class="game-title">
+        <strong>Other Games</strong>
+        <span class="muted">Coming soon</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script src="renderer.js"></script>
+</body>
+</html>

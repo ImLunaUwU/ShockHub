@@ -1,0 +1,215 @@
+body {
+  background: #0e0e11;
+  color: #e6e6eb;
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 { margin-bottom: 12px; }
+
+.panel {
+  background: #18181f;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.shocker {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #222;
+}
+
+.shocker:last-child {
+  border-bottom: none;
+}
+
+.status {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.controls button {
+  margin-left: 6px;
+}
+
+button {
+  background: #3b82f6;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+button.secondary { background: #555; }
+button.stop { background: #ef4444; }
+
+input[type=range] {
+  width: 100%;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  background: #1f1f2a;
+  color: #ccc;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #3b82f6;
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.muted {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+/* ===== Logs ===== */
+.log {
+  padding: 10px;
+  border-bottom: 1px solid #222;
+  font-size: 14px;
+}
+
+.log:last-child {
+  border-bottom: none;
+}
+
+.log .meta {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.log.Shock { border-left: 4px solid #ef4444; }
+.log.Vibrate { border-left: 4px solid #a855f7; }
+.log.Sound { border-left: 4px solid #3b82f6; }
+.log.Stop { border-left: 4px solid #22c55e; }
+
+.empty {
+  opacity: 0.6;
+  font-size: 14px;
+  padding: 10px;
+}
+
+/* ===== VR Mapping ===== */
+.vr-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.2fr 1.5fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #222;
+}
+
+.vr-name {
+  font-weight: 600;
+}
+
+.vr-path {
+  font-family: monospace;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.vr-id {
+  width: 80px;
+  margin-left: 6px;
+}
+
+.vr-mode select {
+  width: 100%;
+}
+
+.vr-intensity {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.vr-intensity span {
+  width: 32px;
+  text-align: right;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* ===== Game Integrations ===== */
+
+.game-panel {
+  padding: 0;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;
+}
+
+.game-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.game-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.inline-toggle {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.chevron {
+  font-size: 14px;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.game-content {
+  padding: 0 16px 16px;
+  display: none;
+}
+
+.game-content.active {
+  display: block;
+}
+
+.game-panel.disabled {
+  opacity: 0.6;
+}
+
+/* Chevron rotation */
+.game-content.active ~ .chevron,
+.game-header .chevron.open {
+  transform: rotate(180deg);
+}

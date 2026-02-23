@@ -1,76 +1,97 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import fetch from "node-fetch";
-import fs from "fs";
-import path from "path";
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const fs = require('fs');
+const axios = require('axios');
+require('./oscquery');
 
-const CONFIG_PATH = path.join(app.getPath("userData"), "config.json");
-const API_BASE = "https://api.openshock.app/v1";
+const CONFIG_PATH = path.join(__dirname, 'config.json');
 
+/* ===== Config ===== */
 function loadConfig() {
-  if (!fs.existsSync(CONFIG_PATH)) {
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify({
-      apiKey: "",
-      selectedShockers: [],
-      combinedMode: false
-    }, null, 2));
+  if (!fs.existsSync(CONFIG_PATH)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  } catch {
+    return {};
   }
-  return JSON.parse(fs.readFileSync(CONFIG_PATH));
 }
 
-function saveConfig(config) {
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
+function saveConfig(cfg) {
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2));
 }
 
-async function apiRequest(apiKey, endpoint, options = {}) {
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
+/* ===== API ===== */
+function api(apiKey) {
+  return axios.create({
+    baseURL: 'https://api.openshock.app',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
+      'Open-Shock-Token': apiKey,
+      'User-Agent': 'OpenShock-Spicer/0.6 (local@app)',
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
+function stopPayload(id) {
+  return {
+    id,
+    type: 'Stop',
+    intensity: 0,
+    duration: 300,
+    exclusive: true
+  };
+}
+
+app.whenReady().then(() => {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 820,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  if (!res.ok) {
-    throw new Error(`API error ${res.status}`);
-  }
-
-  return res.json();
-}
-
-ipcMain.handle("config:load", () => loadConfig());
-ipcMain.handle("config:save", (_, config) => saveConfig(config));
-
-ipcMain.handle("openshock:getShockers", async () => {
-  const { apiKey } = loadConfig();
-  return apiRequest(apiKey, "/shockers");
+  win.loadFile('index.html');
 });
 
-ipcMain.handle("openshock:execute", async (_, payload) => {
-  const { apiKey, selectedShockers, combinedMode } = loadConfig();
+/* ===== IPC ===== */
+ipcMain.handle('config:get', () => loadConfig());
+ipcMain.handle('config:set', (_, cfg) => {
+  saveConfig(cfg);
+});
 
-  const targets = combinedMode
-    ? selectedShockers
-    : [payload.shockerId];
+ipcMain.handle('openshock:getShockers', async () => {
+  const cfg = loadConfig();
+  if (!cfg.apiKey) return [];
 
-  for (const id of targets) {
-    await apiRequest(apiKey, `/shockers/${id}/execute`, {
-      method: "POST",
-      body: JSON.stringify(payload.command)
+  const res = await api(cfg.apiKey).get('/1/shockers/own');
+  return res.data.data.flatMap(g => g.shockers);
+});
+
+ipcMain.handle('openshock:control', async (_, shocks) => {
+  const cfg = loadConfig();
+  if (!cfg.apiKey) throw new Error('API key missing');
+
+  const res = await api(cfg.apiKey).post('/2/shockers/control', {
+    shocks,
+    customName: null
+  });
+
+  // ✅ Return ONLY serializable data
+  return res.data ?? null;
+});
+
+ipcMain.handle('openshock:emergencyStop', async () => {
+  const cfg = loadConfig();
+  if (!cfg.apiKey) return;
+
+  const shocks = Object.values(cfg.shockers || {})
+    .map(s => stopPayload(s.id));
+
+  if (shocks.length) {
+    await api(cfg.apiKey).post('/2/shockers/control', {
+      shocks,
+      customName: null
     });
   }
 });
-
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(process.cwd(), "preload.js")
-    }
-  });
-
-  win.loadFile("renderer/index.html");
-}
-
-app.whenReady().then(createWindow);
