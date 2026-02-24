@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
+  <title>ShockHub Launch</title>
+  <link rel="stylesheet" href="splash.css" />
+</head>
+<body>
+  <div class="splash-shell">
+    <canvas id="field"></canvas>
+    <div class="vignette"></div>
+
+    <div class="center">
+      <div class="charge-ring" id="chargeRing"></div>
+      <div class="brand-wrap" id="brandWrap">
+        <div class="brand-main">ShockHub</div>
+        <div class="brand-shadow">ShockHub</div>
+      </div>
+
+      <div id="bootLog" class="boot-log"></div>
+      <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+  </div>
+
+  <script src="splash.js"></script>
+</body>
+</html>

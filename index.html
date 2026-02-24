@@ -2,17 +2,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>OpenShock Spicer</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://api.openshock.app https://do.pishock.com https://127.0.0.1:2999; media-src 'self' blob:; object-src 'none'; base-uri 'self';">
+  <title>ShockHub</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>OpenShock Spicer</h1>
+<h1>ShockHub</h1>
+<div id="qolStatus" class="muted"></div>
 
 <div class="tabs">
   <button class="tab active" data-tab="control">Control</button>
   <button class="tab" data-tab="config">Config</button>
   <button class="tab" data-tab="logs">Logs</button>
+  <button class="tab" data-tab="debug">Debug</button>
   <button class="tab" data-tab="games">Game Integrations</button>
 </div>
 
@@ -20,38 +23,130 @@
   <div class="panel">
     <h3>Combined Controls</h3>
 
-    Intensity
-    <input type="range" id="intensity" min="1" max="100" value="20">
+    <div class="control-row">
+      <label for="intensity">Intensity</label>
+      <input type="range" id="intensity" min="1" max="100" value="20">
+      <input type="number" id="intensityValue" min="1" max="100" value="20">
+    </div>
 
-    Duration
-    <input type="range" id="duration" min="100" max="5000" value="300">
+    <div class="control-row">
+      <label for="duration">Duration (s)</label>
+      <input type="range" id="duration" min="0.1" max="60" step="0.1" value="0.3">
+      <input type="number" id="durationValue" min="0.1" max="60" step="0.1" value="0.3">
+    </div>
+
+    <div class="control-presets">
+      <button class="secondary" onclick="applyControlPreset('light')">Light</button>
+      <button class="secondary" onclick="applyControlPreset('medium')">Medium</button>
+      <button class="secondary" onclick="applyControlPreset('heavy')">Heavy</button>
+    </div>
 
     <br><br>
-    <button onclick="sendCombined('Shock')">Shock</button>
-    <button onclick="sendCombined('Vibrate')" class="secondary">Vibrate</button>
-    <button onclick="sendCombined('Sound')" class="secondary">Sound</button>
-    <button onclick="emergencyStop()" class="stop">STOP</button>
+    <button data-control-action onclick="sendCombined('Shock')">Shock</button>
+    <button data-control-action onclick="sendCombined('Vibrate')" class="secondary">Vibrate</button>
+    <button data-control-action onclick="sendCombined('Sound')" class="secondary">Sound</button>
+    <button data-control-action onclick="emergencyStop()" class="stop">STOP</button>
+    <div class="muted shortcut-hint">Shortcuts: Ctrl+1 Shock, Ctrl+2 Vibrate, Ctrl+3 Sound, Ctrl+0 Stop</div>
   </div>
 
   <div class="panel">
     <h3>Shockers</h3>
+    <div class="shocker-tools">
+      <button class="secondary" onclick="refreshShockers()">Refresh Shockers</button>
+      <button class="secondary" onclick="selectAllShockers()">Select All</button>
+      <button class="secondary" onclick="clearSelectedShockers()">Clear</button>
+      <button class="secondary" onclick="invertSelectedShockers()">Invert</button>
+      <span id="selectedCount" class="muted">0 selected</span>
+    </div>
     <div id="shockers"></div>
   </div>
 </section>
 
 <section class="tab-panel" id="tab-config">
   <div class="panel">
-    <h3>API</h3>
-    <input id="apiKey" placeholder="API Key" style="width:100%">
-    <br><br>
-    <button onclick="saveConfig()">Save</button>
+    <h3>Provider</h3>
+    <div class="control-row">
+      <label for="provider">Backend</label>
+      <select id="provider" style="width:100%">
+        <option value="openshock">OpenShock</option>
+        <option value="pishock">PiShock</option>
+      </select>
+    </div>
+
+    <div id="openshockConfig">
+      <h4>OpenShock API</h4>
+      <div class="api-key-row">
+        <input id="apiKey" type="password" placeholder="OpenShock API Key" style="width:100%">
+        <button class="secondary" onclick="toggleApiKeyVisibility()" id="apiKeyToggle">Show</button>
+        <button class="secondary" onclick="copyApiKey()">Copy</button>
+      </div>
+    </div>
+
+    <div id="pishockConfig" style="display:none; margin-top:12px;">
+      <h4>PiShock API</h4>
+      <div class="control-row">
+        <label for="pishockUsername">Username</label>
+        <input id="pishockUsername" type="text" placeholder="PiShock username" style="width:100%">
+      </div>
+      <div class="api-key-row">
+        <input id="pishockApiKey" type="password" placeholder="PiShock API Key" style="width:100%">
+        <button class="secondary" onclick="toggleApiKeyVisibility()" id="pishockApiKeyToggle">Show</button>
+        <button class="secondary" onclick="copyApiKey()">Copy</button>
+      </div>
+      <div class="control-row">
+        <label for="pishockScriptName">Script Name</label>
+        <input id="pishockScriptName" type="text" value="ShockHub" style="width:100%">
+      </div>
+      <div class="control-row">
+        <label for="pishockShareCodes">Share Codes</label>
+        <textarea id="pishockShareCodes" rows="4" placeholder="One share code per line" style="width:100%"></textarea>
+      </div>
+      <div class="muted">PiShock uses legacy API with share codes. Add at least one active share code.</div>
+    </div>
+
+    <br>
+    <button class="secondary" onclick="testApiKey()">Test Provider Connection</button>
+    <button class="secondary" onclick="exportConfigFile()">Export Config</button>
+    <button class="secondary" onclick="importConfigFile()">Import Config</button>
+    <button class="stop" onclick="resetConfigFile()">Reset Config</button>
+    <div class="muted">Warning: exported config files include your API credentials.</div>
   </div>
 </section>
 
 <section class="tab-panel" id="tab-logs">
   <div class="panel">
-    <h3>Logs</h3>
-    <div class="muted">Logs loaded later</div>
+    <h3>Logs <span id="logsCount" class="muted">(0 entries)</span></h3>
+    <div class="logs-toolbar">
+      <input id="logsSearch" placeholder="Search by type or shocker" />
+      <select id="logsTypeFilter">
+        <option value="All">All</option>
+        <option value="Shock">Shock</option>
+        <option value="Vibrate">Vibrate</option>
+        <option value="Sound">Sound</option>
+        <option value="Stop">Stop</option>
+      </select>
+      <button class="secondary" onclick="renderActionLogs({ refresh: true, force: true })">Refresh</button>
+      <button class="secondary" onclick="copyVisibleLogs()">Copy Visible</button>
+      <button class="secondary" onclick="exportVisibleLogs()">Export Visible</button>
+    </div>
+    <button class="secondary" onclick="clearActionLogs()">Clear Logs</button>
+    <br><br>
+    <div id="logsList" class="logs-list"></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-debug">
+  <div class="panel">
+    <h3>Debug <span id="debugCounts" class="muted">(console 0)</span></h3>
+    <div class="logs-toolbar">
+      <button class="secondary" onclick="renderDebugLogs({ refreshConsole: true, force: true })">Refresh</button>
+      <button class="secondary" onclick="clearDebugConsoleLogs()">Clear Console</button>
+      <button class="secondary" onclick="copyDebugLogs()">Copy All</button>
+      <button class="secondary" onclick="exportDebugLogs()">Export All</button>
+    </div>
+
+    <h4>Console</h4>
+    <div id="debugConsoleList" class="logs-list"></div>
   </div>
 </section>
 
@@ -84,12 +179,12 @@
       <!-- Prefix -->
       <div class="vr-prefix">
         <label>OSC Prefix</label>
+        <div id="oscStatus" class="muted">OSC: checking...</div>
         <div class="prefix-row">
           <span>/avatar/parameters/</span>
           <input id="vrPrefix" placeholder="openshock">
           <span>/</span>
         </div>
-        <button onclick="saveVR()">Save VR Settings</button>
       </div>
 
       <hr>
@@ -97,6 +192,146 @@
       <!-- Shocker mapping -->
       <h4>Shocker Mapping</h4>
       <div id="vr-shockers"></div>
+    </div>
+  </div>
+
+  <!-- Arena Breakout Infinite integration -->
+  <div class="panel game-panel">
+    <div class="game-header" onclick="toggleGame('arena')">
+      <div class="game-title">
+        <strong>Arena Breakout Infinite</strong>
+        <span class="muted">Vision</span>
+      </div>
+      <div class="game-controls">
+        <label class="inline-toggle" onclick="event.stopPropagation()">
+          <input type="checkbox" id="arenaEnabled">
+          Enabled
+        </label>
+
+        <span class="chevron" id="chevron-arena">▼</span>
+      </div>
+    </div>
+
+    <div class="game-content" id="game-arena">
+      <!-- Emergency stop button reuses existing control -->
+      <button class="stop emergency" onclick="emergencyStop()">
+        🛑 EMERGENCY STOP — ALL SHOCKERS
+      </button>
+
+      <div class="arena-config-row">
+        <label>Sensitivity</label>
+        <input type="range" id="arenaSensitivity" min="0" max="255" value="50">
+      </div>
+      <div class="arena-config-row">
+        <label>Min&nbsp;Shock</label>
+        <input type="range" id="arenaMinIntensity" min="1" max="100" value="1">
+        <span>1</span>
+      </div>
+      <div class="arena-config-row">
+        <label>Max&nbsp;Shock</label>
+        <input type="range" id="arenaMaxIntensity" min="1" max="100" value="100">
+        <span>100</span>
+      </div>
+      <div class="arena-config-row">
+        <label>Duration</label>
+        <input type="range" id="arenaDuration" min="100" max="5000" value="300">
+      </div>
+
+      <h4>Focus Area</h4>
+      <div class="arena-config-row focus-grid">
+        <label>X</label>
+        <input type="number" id="arenaFocusX" min="0" value="0">
+        <label>Y</label>
+        <input type="number" id="arenaFocusY" min="0" value="0">
+      </div>
+      <div class="arena-config-row focus-grid">
+        <label>Width</label>
+        <input type="number" id="arenaFocusW" min="1" value="1920">
+        <label>Height</label>
+        <input type="number" id="arenaFocusH" min="1" value="1080">
+      </div>
+      <div class="arena-config-row">
+        <button id="arenaPickFocus" class="secondary">Pick On Preview</button>
+        <button id="arenaFullFocus" class="secondary">Use Full Frame</button>
+      </div>
+      <div class="muted">Tip: click "Pick On Preview" then drag a box over the monitor/game area.</div>
+
+      <hr>
+      <h4>Limb Config (Position &amp; Size)</h4>
+      <div id="arena-limb-config"></div>
+
+      <hr>
+      <h4>Shocker Mapping</h4>
+      <div id="arena-mapping"></div>
+
+      <hr>
+      <div class="arena-config-row">
+        <button id="arenaStart">Start Capture</button>
+      </div>
+
+      <div id="arena-status" class="arena-status">not capturing</div>
+      <div id="arena-debug" class="arena-debug">
+        <canvas id="arena-preview" width="320" height="180" style="border:1px solid #444;"></canvas>
+        <div id="arena-circles" class="arena-circles"></div>
+      </div>
+
+      <br>
+    </div>
+  </div>
+
+  <!-- League of Legends integration -->
+  <div class="panel game-panel">
+    <div class="game-header" onclick="toggleGame('league')">
+      <div class="game-title">
+        <strong>League of Legends</strong>
+        <span class="muted">Native Hook</span>
+      </div>
+      <div class="game-controls">
+        <label class="inline-toggle" onclick="event.stopPropagation()">
+          <input type="checkbox" id="leagueEnabled">
+          Enabled
+        </label>
+
+        <span class="chevron" id="chevron-league">▼</span>
+      </div>
+    </div>
+
+    <div class="game-content" id="game-league">
+      <button class="stop emergency" onclick="emergencyStop()">
+        🛑 EMERGENCY STOP — ALL SHOCKERS
+      </button>
+
+      <div class="arena-config-row">
+        <label>Drop %</label>
+        <input type="range" id="leagueSensitivity" min="1" max="50" value="12">
+        <span id="leagueSensitivityLabel">12</span>
+      </div>
+      <div class="arena-config-row">
+        <label>Min&nbsp;Shock</label>
+        <input type="range" id="leagueMinIntensity" min="1" max="100" value="1">
+        <span id="leagueMinIntensityLabel">1</span>
+      </div>
+      <div class="arena-config-row">
+        <label>Max&nbsp;Shock</label>
+        <input type="range" id="leagueMaxIntensity" min="1" max="100" value="100">
+        <span id="leagueMaxIntensityLabel">100</span>
+      </div>
+      <div class="arena-config-row">
+        <label>Duration</label>
+        <input type="range" id="leagueDuration" min="100" max="5000" value="300">
+      </div>
+
+      <h4>Shocker Mapping</h4>
+      <div class="arena-config-row">
+        <select id="leagueMapping" multiple size="5" style="width:100%"></select>
+      </div>
+
+      <div class="arena-config-row">
+        <button id="leagueStart">Start Hook</button>
+      </div>
+
+      <div id="leagueStatus" class="arena-status">not hooked</div>
+      <div id="leagueDebug" class="muted">waiting for game data...</div>
     </div>
   </div>
 
@@ -112,6 +347,8 @@
 
 </section>
 
+<script src="arena-breakout.js"></script>
+<script src="league-of-legends.js"></script>
 <script src="renderer.js"></script>
 </body>
 </html>

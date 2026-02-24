@@ -1,8 +1,81 @@
 {
   "apiKey": "7NPr2mYVDUIUMcvm1EyziocpPkFgqFMMnSGKhNm682a9XG23MbIm53CoINd56lli",
   "vrchat": {
-    "enabled": true,
+    "enabled": false,
     "prefix": "openshock"
+  },
+  "arenaBreakout": {
+    "enabled": false,
+    "threshold": 122,
+    "minIntensity": 1,
+    "maxIntensity": 100,
+    "duration": 418,
+    "focusArea": {
+      "x": 963,
+      "y": 397,
+      "width": 67,
+      "height": 110
+    },
+    "limbConfigs": {
+      "head": {
+        "x": 30,
+        "y": 10,
+        "size": 6
+      },
+      "thorax": {
+        "x": 27,
+        "y": 24,
+        "size": 10
+      },
+      "stomach": {
+        "x": 30,
+        "y": 45,
+        "size": 7
+      },
+      "leftArm": {
+        "x": 19,
+        "y": 29,
+        "size": 4
+      },
+      "rightArm": {
+        "x": 43,
+        "y": 27,
+        "size": 5
+      },
+      "leftLeg": {
+        "x": 24,
+        "y": 61,
+        "size": 4
+      },
+      "rightLeg": {
+        "x": 37,
+        "y": 59,
+        "size": 5
+      }
+    },
+    "limbMap": {
+      "head": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ],
+      "thorax": [
+        "13e19059-8d42-4aa3-901f-ccec1d68ff72"
+      ],
+      "stomach": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ],
+      "leftArm": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ],
+      "rightArm": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ],
+      "leftLeg": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ],
+      "rightLeg": [
+        "91346346-6b6f-4f83-81a9-df095e107aaa"
+      ]
+    }
   },
   "shockers": {
     "91346346-6b6f-4f83-81a9-df095e107aaa": {
@@ -10,8 +83,9 @@
       "name": "Upper Arm L",
       "vrchatId": "1",
       "mode": "Sound",
-      "intensity": 38,
-      "duration": 300
+      "intensity": 28,
+      "duration": 300,
+      "provider": "openshock"
     },
     "6aafc964-e34a-43b8-ab27-ded1c38b7e58": {
       "id": "6aafc964-e34a-43b8-ab27-ded1c38b7e58",
@@ -19,7 +93,8 @@
       "vrchatId": "2",
       "mode": "Sound",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "c8d2494d-6b01-42d6-8a4d-137618b7e926": {
       "id": "c8d2494d-6b01-42d6-8a4d-137618b7e926",
@@ -27,7 +102,8 @@
       "vrchatId": "3",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "6b2a2eff-08f5-4179-ab5d-e424fdd83282": {
       "id": "6b2a2eff-08f5-4179-ab5d-e424fdd83282",
@@ -35,7 +111,8 @@
       "vrchatId": "4",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "65519727-9672-4f09-89cf-1885e1f6b794": {
       "id": "65519727-9672-4f09-89cf-1885e1f6b794",
@@ -43,7 +120,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "1d787b6c-0d2e-483a-8a55-d12bd109d1fa": {
       "id": "1d787b6c-0d2e-483a-8a55-d12bd109d1fa",
@@ -51,7 +129,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "5eec1145-48e5-46cb-8edd-be4ffb275bb9": {
       "id": "5eec1145-48e5-46cb-8edd-be4ffb275bb9",
@@ -59,7 +138,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "fd5de0d9-7845-4280-9e21-06392d2fea1c": {
       "id": "fd5de0d9-7845-4280-9e21-06392d2fea1c",
@@ -67,7 +147,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "13e19059-8d42-4aa3-901f-ccec1d68ff72": {
       "id": "13e19059-8d42-4aa3-901f-ccec1d68ff72",
@@ -75,7 +156,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "49562737-2d0a-49ac-8daa-e5587535de45": {
       "id": "49562737-2d0a-49ac-8daa-e5587535de45",
@@ -83,7 +165,8 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
     },
     "c5ee8d17-2b74-4b46-8b7e-7d74d0f93d09": {
       "id": "c5ee8d17-2b74-4b46-8b7e-7d74d0f93d09",
@@ -91,51 +174,53 @@
       "vrchatId": "",
       "mode": "Shock",
       "intensity": 20,
-      "duration": 300
+      "duration": 300,
+      "provider": "openshock"
+    },
+    "6E3E1328FA2": {
+      "id": "6E3E1328FA2",
+      "name": "Leg L",
+      "vrchatId": "",
+      "mode": "Shock",
+      "intensity": 20,
+      "duration": 300,
+      "provider": "pishock"
     }
   },
   "ui": {
     "collapsed": {
-      "vrchat": false,
-      "arena": false
+      "vrchat": true,
+      "arena": true,
+      "league": true
+    },
+    "selectedShockerIds": [],
+    "activeTab": "config"
+  },
+  "leagueOfLegends": {
+    "enabled": false,
+    "threshold": 12,
+    "interval": 250,
+    "minIntensity": 1,
+    "maxIntensity": 100,
+    "duration": 300,
+    "cooldownMs": 500,
+    "targetShockerIds": [
+      "91346346-6b6f-4f83-81a9-df095e107aaa"
+    ],
+    "focusArea": {
+      "x": 760,
+      "y": 1000,
+      "width": 400,
+      "height": 20
     }
   },
-  "vision": {
-    "arenaBreakout": {
-      "enabled": false,
-      "monitor": 0,
-      "sampleSize": 6,
-      "cooldownMs": 1200,
-      "limbs": {
-        "head": {
-          "x": 70,
-          "y": 820
-        },
-        "thorax": {
-          "x": 70,
-          "y": 850
-        },
-        "stomach": {
-          "x": 70,
-          "y": 885
-        },
-        "leftArm": {
-          "x": 40,
-          "y": 865
-        },
-        "rightArm": {
-          "x": 100,
-          "y": 865
-        },
-        "leftLeg": {
-          "x": 55,
-          "y": 935
-        },
-        "rightLeg": {
-          "x": 85,
-          "y": 935
-        }
-      }
-    }
+  "provider": "openshock",
+  "pishock": {
+    "username": "imlunauwu",
+    "apiKey": "045e1334-5a33-438a-aaef-f305bc938646",
+    "scriptName": "ShockHub",
+    "shareCodes": [
+      "6E3E1328FA2"
+    ]
   }
 }
