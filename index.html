@@ -11,6 +11,28 @@
 <h1>ShockHub</h1>
 <div id="qolStatus" class="muted"></div>
 
+<div id="safetyModal" class="safety-modal" role="dialog" aria-modal="true" aria-labelledby="safetyTitle" style="display:none;">
+  <div class="safety-card">
+    <h2 id="safetyTitle">Safety Acknowledgment Required</h2>
+    <p>
+      By using ShockHub, you accept full responsibility for device usage and outcomes.
+      The author is not responsible for unwanted shocks, injuries, damages, or any other harm.
+    </p>
+    <p>
+      Follow proper shock-collar safety guidance at all times.
+      Do not place electrodes on the chest, head, neck, or spine.
+    </p>
+    <label class="safety-check">
+      <input type="checkbox" id="safetyAcknowledgeCheckbox">
+      <span>I understand and accept these safety terms.</span>
+    </label>
+    <div class="safety-actions">
+      <button class="secondary" id="safetyDeclineButton">Exit App</button>
+      <button id="safetyAcceptButton" disabled>Accept & Continue</button>
+    </div>
+  </div>
+</div>
+
 <div class="tabs">
   <button class="tab active" data-tab="control">Control</button>
   <button class="tab" data-tab="config">Config</button>
@@ -108,6 +130,7 @@
     <button class="secondary" onclick="testApiKey()">Test Provider Connection</button>
     <button class="secondary" onclick="exportConfigFile()">Export Config</button>
     <button class="secondary" onclick="importConfigFile()">Import Config</button>
+    <button class="secondary" onclick="resetSafetyWarning()">Reset Safety Warning</button>
     <button class="stop" onclick="resetConfigFile()">Reset Config</button>
     <div class="muted">Warning: exported config files include your API credentials.</div>
   </div>

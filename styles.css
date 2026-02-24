@@ -29,6 +29,58 @@ h1 {
   opacity: 1;
 }
 
+body.safety-lock {
+  overflow: hidden;
+}
+
+.safety-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 7, 14, 0.86);
+  backdrop-filter: blur(4px);
+  padding: 18px;
+}
+
+.safety-card {
+  width: min(680px, 100%);
+  background: #151824;
+  border: 1px solid #2a3147;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.safety-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.safety-card p {
+  margin: 0 0 10px;
+  color: #cfd6ea;
+  line-height: 1.45;
+}
+
+.safety-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.safety-check input {
+  margin-top: 3px;
+}
+
+.safety-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .panel {
   background: #18181f;
   border: 1px solid #262633;

@@ -79,6 +79,10 @@ function normalizeProvider(value) {
   return String(value || '').toLowerCase() === 'pishock' ? 'pishock' : 'openshock';
 }
 
+function hasSafetyAcknowledged(cfg) {
+  return Boolean(cfg?.safety?.accepted);
+}
+
 function buildPiShockPayload(payload = {}) {
   const shareCodes = Array.isArray(payload.shareCodes)
     ? payload.shareCodes
@@ -159,6 +163,7 @@ app.whenReady().then(() => {
   const win = new BrowserWindow({
     width: 1200,
     height: 820,
+    title: `ShockHub v${app.getVersion()}`,
     autoHideMenuBar: true,
     show: false,
     backgroundColor: '#0e0e11',
@@ -178,6 +183,10 @@ app.whenReady().then(() => {
 
   win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
     captureRendererConsole(level, message, sourceId, line);
+  });
+
+  win.webContents.once('did-finish-load', () => {
+    win.setTitle(`ShockHub v${app.getVersion()}`);
   });
 
   let mainReady = false;
@@ -368,6 +377,11 @@ ipcMain.handle('shockhub:getShockers', async () => {
 
 /* ===== Manual Control (UI buttons etc.) ===== */
 ipcMain.handle('shockhub:control', async (_, shocks) => {
+  const cfg = loadConfig();
+  if (!hasSafetyAcknowledged(cfg)) {
+    throw new Error('Safety acknowledgment required before control actions.');
+  }
+
   console.debug('[ipc] shockhub:control', { count: Array.isArray(shocks) ? shocks.length : 0 });
   for (const s of shocks) {
     await ShockHubController.trigger(

@@ -3,3 +3,4 @@ out
 dist
 actions.log
 config.json
+RELEASE_NOTES*.md

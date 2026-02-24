@@ -32,6 +32,10 @@ const durationValue = document.getElementById('durationValue');
 const provider = document.getElementById('provider');
 const openshockConfig = document.getElementById('openshockConfig');
 const pishockConfig = document.getElementById('pishockConfig');
+const safetyModal = document.getElementById('safetyModal');
+const safetyAcknowledgeCheckbox = document.getElementById('safetyAcknowledgeCheckbox');
+const safetyAcceptButton = document.getElementById('safetyAcceptButton');
+const safetyDeclineButton = document.getElementById('safetyDeclineButton');
 const apiKeyInput = document.getElementById('apiKey');
 const pishockUsernameInput = document.getElementById('pishockUsername');
 const pishockApiKeyInput = document.getElementById('pishockApiKey');
@@ -103,6 +107,7 @@ let unsavedWatchersBound = false;
 let statusTimer = null;
 let configAutoSaveTimer = null;
 let vrAutoSaveTimer = null;
+let safetyBindingsAttached = false;
 
 const CONTROL_PRESETS = {
   light: { intensity: 15, duration: 0.3 },
@@ -180,6 +185,55 @@ function setControlButtonsDisabled(disabled) {
   });
 }
 
+function hasSafetyAcknowledged() {
+  return Boolean(appConfig?.safety?.accepted);
+}
+
+function showSafetyModal() {
+  if (!safetyModal) return;
+  safetyModal.style.display = 'grid';
+  document.body.classList.add('safety-lock');
+  if (safetyAcknowledgeCheckbox) safetyAcknowledgeCheckbox.checked = false;
+  if (safetyAcceptButton) safetyAcceptButton.disabled = true;
+}
+
+function hideSafetyModal() {
+  if (!safetyModal) return;
+  safetyModal.style.display = 'none';
+  document.body.classList.remove('safety-lock');
+}
+
+async function acceptSafetyTerms() {
+  appConfig.safety = {
+    accepted: true,
+    acceptedAt: new Date().toISOString(),
+    version: 1
+  };
+  await window.api.setConfig(appConfig);
+  hideSafetyModal();
+  setStatus('Safety terms accepted.');
+}
+
+function bindSafetyModal() {
+  if (safetyBindingsAttached) return;
+  if (!safetyModal || !safetyAcknowledgeCheckbox || !safetyAcceptButton || !safetyDeclineButton) return;
+
+  safetyAcknowledgeCheckbox.addEventListener('change', () => {
+    safetyAcceptButton.disabled = !safetyAcknowledgeCheckbox.checked;
+  });
+
+  safetyAcceptButton.addEventListener('click', async () => {
+    if (!safetyAcknowledgeCheckbox.checked) return;
+    await acceptSafetyTerms();
+  });
+
+  safetyDeclineButton.addEventListener('click', () => {
+    window.close();
+  });
+
+  safetyBindingsAttached = true;
+}
+
 function extractErrorMessage(error) {
   if (!error) return 'Unknown error';
   if (typeof error === 'string') return error;
@@ -188,6 +242,12 @@ function extractErrorMessage(error) {
 }
 
 async function runControlAction(task) {
+  if (!hasSafetyAcknowledged()) {
+    showSafetyModal();
+    setStatus('Accept safety terms before sending actions.', true, 4200);
+    return false;
+  }
+
   if (controlActionInFlight) {
     setStatus('Action already in progress…', true);
     logDebug('Control action blocked: already in flight');
@@ -712,12 +772,33 @@ async function resetConfigFile() {
   location.reload();
 }
 
+async function resetSafetyWarning() {
+  if (!confirm('Require safety acknowledgment again?')) return;
+
+  appConfig.safety = {
+    accepted: false,
+    acceptedAt: null,
+    version: 1
+  };
+
+  await window.api.setConfig(appConfig);
+  showSafetyModal();
+  setStatus('Safety warning reset. Acceptance is now required.', true, 4200);
+}
+
 /* ===== Load ===== */
 let appConfig = {};
 
 async function load() {
   await loadAppConfig();
   logDebug('App config loaded', { provider: appConfig.provider, activeTab: appConfig?.ui?.activeTab });
+  bindSafetyModal();
+
+  if (!hasSafetyAcknowledged()) {
+    showSafetyModal();
+  } else {
+    hideSafetyModal();
+  }
 
   if (!controlInputsBound) {
     intensity?.addEventListener('input', syncControlInputsFromSliders);
@@ -1418,6 +1499,14 @@ async function loadAppConfig() {
   appConfig.pishock.shareCodes = Array.isArray(appConfig.pishock.shareCodes)
     ? appConfig.pishock.shareCodes.map(code => String(code || '').trim().toUpperCase()).filter(Boolean)
     : parseShareCodes(appConfig.pishock.shareCodes || '');
+  appConfig.safety ??= {
+    accepted: false,
+    acceptedAt: null,
+    version: 1
+  };
+  appConfig.safety.accepted = Boolean(appConfig.safety.accepted);
+  appConfig.safety.acceptedAt = appConfig.safety.acceptedAt || null;
+  appConfig.safety.version = Number(appConfig.safety.version) || 1;
   appConfig.leagueOfLegends.targetShockerIds = Array.isArray(appConfig.leagueOfLegends.targetShockerIds)
     ? appConfig.leagueOfLegends.targetShockerIds
     : [];
